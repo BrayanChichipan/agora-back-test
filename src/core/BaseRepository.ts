@@ -23,13 +23,15 @@ export class BaseRepository<T> {
     return await this.collection.find().toArray();
   }
 
-  async findOne(id: string): Promise<WithId<T> | null> {
+  async findOneById(id: string): Promise<WithId<T> | null> {
     return await this.collection.findOne({
       _id: new ObjectId(id),
     } as Filter<T>);
   }
 
-  async create(entity: T): Promise<WithId<T>> {
+  async create(
+    entity: Omit<T, '_id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<WithId<T>> {
     const now = new Date();
     const createdAt = now.toISOString();
     const updatedAt = now.toISOString();
@@ -39,12 +41,12 @@ export class BaseRepository<T> {
       updatedAt,
     };
     const result = await this.collection.insertOne(
-      entityWithTimestamps as OptionalUnlessRequiredId<T>,
+      entityWithTimestamps as unknown as OptionalUnlessRequiredId<T>,
     );
     return {
       ...entityWithTimestamps,
       _id: result.insertedId,
-    } as WithId<T>;
+    } as unknown as WithId<T>;
   }
 
   async update(id: string, entity: T): Promise<WithId<T> | null> {
