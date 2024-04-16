@@ -29,6 +29,10 @@ export class BaseRepository<T> {
     } as Filter<T>);
   }
 
+  async findOne(filter: Filter<T>): Promise<WithId<T> | null> {
+    return await this.collection.findOne(filter);
+  }
+
   async create(
     entity: Omit<T, '_id' | 'createdAt' | 'updatedAt'>,
   ): Promise<WithId<T>> {

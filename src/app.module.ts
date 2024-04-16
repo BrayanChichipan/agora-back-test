@@ -3,9 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { EnvConfig } from '@/config/envars.config';
-import { BlogModule } from './blog/blog.module';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -14,9 +14,9 @@ import { UsersModule } from './users/users.module';
       envFilePath: ['.env'],
       load: [EnvConfig],
     }),
-    BlogModule,
     DatabaseModule,
     UsersModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

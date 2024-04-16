@@ -14,12 +14,24 @@ export class UsersService {
   constructor(private readonly userRepo: UserRepository) {}
 
   async create(createUserDto: CreateUserDto) {
+    let user: User;
+
     const userDto: CreateUserDto = {
       ...createUserDto,
       password: bcrypt.hashSync(createUserDto.password, 10),
     };
     try {
-      const user = await this.userRepo.create(userDto);
+      user = await this.userRepo.findOne({ email: userDto.email });
+    } catch (error) {
+      this.handeDBExceptions(error);
+    }
+
+    if (user) {
+      throw new BadRequestException('Email already exists');
+    }
+
+    try {
+      user = await this.userRepo.create(userDto);
       return user;
     } catch (error) {
       this.handeDBExceptions(error);
@@ -47,14 +59,21 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
+    let user: User;
     try {
-      const user = await this.userRepo.findOneById(id);
-      if (!user) {
-        return new NotFoundException(
-          `Pet with id:  ${JSON.stringify(id)} not found`,
-        );
-      }
-      Object.assign(user, updateUserDto);
+      user = await this.userRepo.findOneById(id);
+    } catch (error) {
+      this.handeDBExceptions(error);
+    }
+
+    if (!user) {
+      throw new NotFoundException(
+        `User with id:  ${JSON.stringify(id)} not found`,
+      );
+    }
+
+    Object.assign(user, updateUserDto);
+    try {
       return await this.userRepo.update(id, user);
     } catch (error) {
       this.handeDBExceptions(error);
@@ -71,26 +90,21 @@ export class UsersService {
     }
 
     if (!user) {
-      return new NotFoundException(
+      throw new NotFoundException(
         `User with id:  ${JSON.stringify(id)} not found`,
       );
     }
 
     try {
-      return await this.userRepo.delete(user._id);
+      await this.userRepo.delete(user._id);
+      return {
+        status: 'ok',
+        message: 'User deleted successfully',
+      };
     } catch (error) {
       this.handeDBExceptions(error);
     }
   }
-
-  //db delete
-  // async delete(id: string) {
-  //   try {
-  //     await this.userRepo.delete({ id });
-  //   } catch (error) {
-  //     this.handeDBExceptions(error);
-  //   }
-  // }
 
   private handeDBExceptions(error: any) {
     if (error.code === '23505') {
