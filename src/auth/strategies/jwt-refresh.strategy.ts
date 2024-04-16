@@ -7,6 +7,7 @@ import { UsersService } from 'src/users/users.service';
 import { Request } from 'express';
 import { AuthType } from '../types';
 import { User } from '@/users/entities/user.entity';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class RefreshJwtStrategy extends PassportStrategy(
@@ -40,7 +41,7 @@ export class RefreshJwtStrategy extends PassportStrategy(
     //se ejecuta una ves passportj-wt valida que sea un token valido que no haya expirado
     const { id } = payload;
 
-    const user = (await this.userService.findOneById(id)) as User;
+    const user = (await this.userService.findOneById(new ObjectId(id))) as User;
 
     if (!user) throw new UnauthorizedException('Token not valid');
 

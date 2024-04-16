@@ -1,11 +1,12 @@
+import { ObjectId } from 'mongodb';
 import { PostType } from '../types';
 
 export class Post {
-  _id: string;
+  _id: ObjectId;
   title: string;
   subtitle: string;
   content: string;
-  userId: string;
+  userId: ObjectId;
   createdAt: Date;
   updatedAt: Date;
   publishedAt?: Date;

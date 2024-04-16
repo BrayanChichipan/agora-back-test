@@ -23,9 +23,9 @@ export class BaseRepository<T> {
     // })) as WithId<T>[];
   }
 
-  async findOneById(id: string): Promise<WithId<T> | null> {
+  async findOneById(id: ObjectId): Promise<WithId<T> | null> {
     return await this.collection.findOne({
-      _id: new ObjectId(id),
+      _id: id,
     } as Filter<T>);
   }
 
@@ -53,17 +53,17 @@ export class BaseRepository<T> {
     } as unknown as WithId<T>;
   }
 
-  async update(id: string, entity: T): Promise<WithId<T> | null> {
+  async update(id: ObjectId, entity: T): Promise<WithId<T> | null> {
     const updatedAt = new Date().toISOString();
     const result = await this.collection.findOneAndUpdate(
-      { _id: new ObjectId(id) } as Filter<T>,
+      { _id: id } as Filter<T>,
       { $set: { ...entity, updatedAt } },
       { returnDocument: 'after' },
     );
     return result;
   }
 
-  async delete(id: string): Promise<void> {
-    await this.collection.deleteOne({ _id: new ObjectId(id) } as Filter<T>);
+  async delete(id: ObjectId): Promise<void> {
+    await this.collection.deleteOne({ _id: id } as Filter<T>);
   }
 }

@@ -6,6 +6,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { AuthType } from '../types';
 import { User } from '@/users/entities/user.entity';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, AuthType.access) {
@@ -23,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, AuthType.access) {
     //se ejecuta una ves passportj-wt valida que sea un token valido que no haya expirado
     const { id } = payload;
 
-    const user = (await this.userService.findOneById(id)) as User;
+    const user = (await this.userService.findOneById(new ObjectId(id))) as User;
 
     if (!user) throw new UnauthorizedException('Token not valid');
 

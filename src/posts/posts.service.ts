@@ -9,6 +9,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PostRepository } from './entities/post.repository';
 import { Post } from './entities/post.entity';
 import { User } from '@/users/entities/user.entity';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class PostsService {
@@ -30,7 +31,7 @@ export class PostsService {
     return this.postRepo.findAll();
   }
 
-  async findOneById(id: string) {
+  async findOneById(id: ObjectId) {
     let post: Post;
 
     try {
@@ -48,7 +49,7 @@ export class PostsService {
     return post;
   }
 
-  async update(id: string, updatePost: UpdatePostDto) {
+  async update(id: ObjectId, updatePost: UpdatePostDto) {
     let post: Post;
     try {
       post = await this.postRepo.findOneById(id);
@@ -71,7 +72,7 @@ export class PostsService {
   }
 
   //softdelete
-  async remove(id: string) {
+  async remove(id: ObjectId) {
     let post: Post;
     try {
       post = await this.postRepo.findOneById(id);

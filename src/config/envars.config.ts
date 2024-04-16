@@ -6,6 +6,7 @@ export const EnvConfig: ConfigFactory = () => ({
   MONGO_URI: process.env.MONGO_URI || 'mongodb://localhost:27017/my-db',
   WEB_CLIENT_DOMAIN: process.env.WEB_CLIENT_DOMAIN || 'localhost',
   JWT_SECRET: process.env.JWT_SECRET,
+  CACHE_TTL: process.env.CACHE_TTL || 6000,
 });
 
 export interface IEnvars {
@@ -14,4 +15,5 @@ export interface IEnvars {
   MONGO_URI: string;
   WEB_CLIENT_DOMAIN: string;
   JWT_SECRET: string;
+  CACHE_TTL: number;
 }

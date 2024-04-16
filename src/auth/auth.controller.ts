@@ -65,7 +65,7 @@ export class AuthController {
   @Get('refresh')
   refresh(@GetUser() user: User) {
     const { access_token } = this.authService.generateTokens({
-      id: user._id,
+      id: user._id.toHexString(),
     });
 
     return {

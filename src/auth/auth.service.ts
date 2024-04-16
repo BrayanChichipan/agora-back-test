@@ -26,7 +26,7 @@ export class AuthService {
     }
 
     const { access_token, refresh_token } = this.generateTokens({
-      id: user._id,
+      id: user._id.toHexString(),
     });
     return { user, access_token, refresh_token };
   }
@@ -45,7 +45,7 @@ export class AuthService {
     });
 
     const { access_token, refresh_token } = this.generateTokens({
-      id: user._id,
+      id: user._id.toHexString(),
     });
     return { access_token, refresh_token, user };
   }

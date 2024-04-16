@@ -8,6 +8,7 @@ import { UserRepository } from './entities/user.repository';
 import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { CreateUserDto, UpdateUserDto } from './dto';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsersService {
@@ -42,7 +43,7 @@ export class UsersService {
     return this.userRepo.findAll();
   }
 
-  async findOneById(id: string) {
+  async findOneById(id: ObjectId) {
     let user: User;
 
     try {
@@ -74,7 +75,7 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: ObjectId, updateUserDto: UpdateUserDto) {
     let user: User;
     try {
       user = await this.userRepo.findOneById(id);
@@ -97,7 +98,7 @@ export class UsersService {
   }
 
   //softdelete
-  async remove(id: string) {
+  async remove(id: ObjectId) {
     let user: User;
     try {
       user = await this.userRepo.findOneById(id);
