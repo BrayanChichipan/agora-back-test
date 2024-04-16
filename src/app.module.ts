@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { UserContactModule } from './user-contact/user-contact.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     UsersModule,
     PostsModule,
     AuthModule,
+    UserContactModule,
   ],
   controllers: [AppController],
   providers: [AppService],
