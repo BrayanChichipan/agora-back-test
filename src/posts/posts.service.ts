@@ -37,14 +37,17 @@ export class PostsService {
         { subtitle: { $regex: query.search, $options: 'i' } },
       ];
     }
+    if (query.type) {
+      filter['type'] = query.type;
+    }
     return this.postRepo.findAndCount(
       {
         ...filter,
-        type: query.type,
+        isPublished: true,
       },
       {
         limit: query.limit,
-        skip: query.skip * query.limit,
+        skip: (query.page - 1) * query.limit,
         sort: query.sort,
       },
     );

@@ -9,6 +9,7 @@ import { UpdateUserContactDto } from './dto/update-user-contact.dto';
 import { UserContactRepository } from './entities/user-contact.repository';
 import { UserContact } from './entities/user-contact.entity';
 import { ObjectId } from 'mongodb';
+import { PostQueryDto } from '@/posts/dto/query.dto';
 
 @Injectable()
 export class UserContactService {
@@ -25,8 +26,25 @@ export class UserContactService {
     }
   }
 
-  findAll() {
-    return this.userRepo.findAll();
+  findAll(query: PostQueryDto) {
+    const filter = {};
+
+    if (query.search) {
+      filter['$or'] = [
+        { name: { $regex: query.search, $options: 'i' } },
+        { email: { $regex: query.search, $options: 'i' } },
+      ];
+    }
+    return this.userRepo.findAndCount(
+      {
+        ...filter,
+      },
+      {
+        limit: query.limit,
+        skip: (query.page - 1) * query.limit,
+        sort: query.sort,
+      },
+    );
   }
 
   async findOneById(id: ObjectId) {

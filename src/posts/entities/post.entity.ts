@@ -12,4 +12,5 @@ export class Post {
   publishedAt?: Date;
   isPublished: boolean;
   type: PostType;
+  images?: string[];
 }

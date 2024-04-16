@@ -7,6 +7,7 @@ export class PostQueryDto extends PaginationDto {
   @IsString()
   search?: string;
 
+  @IsOptional()
   @IsEnum(PostType)
   type?: PostType;
 
