@@ -10,6 +10,7 @@ import { PostRepository } from './entities/post.repository';
 import { Post } from './entities/post.entity';
 import { User } from '@/users/entities/user.entity';
 import { ObjectId } from 'mongodb';
+import { PostQueryDto } from './dto/query.dto';
 
 @Injectable()
 export class PostsService {
@@ -27,8 +28,26 @@ export class PostsService {
     }
   }
 
-  findAll() {
-    return this.postRepo.findAll();
+  findAll(query: PostQueryDto) {
+    const filter = {};
+
+    if (query.search) {
+      filter['$or'] = [
+        { title: { $regex: query.search, $options: 'i' } },
+        { subtitle: { $regex: query.search, $options: 'i' } },
+      ];
+    }
+    return this.postRepo.findAndCount(
+      {
+        ...filter,
+        type: query.type,
+      },
+      {
+        limit: query.limit,
+        skip: query.skip * query.limit,
+        sort: query.sort,
+      },
+    );
   }
 
   async findOneById(id: ObjectId) {

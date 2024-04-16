@@ -5,6 +5,7 @@ import {
   WithId,
   Filter,
   OptionalUnlessRequiredId,
+  FindOptions,
 } from 'mongodb';
 
 export class BaseRepository<T> {
@@ -14,13 +15,21 @@ export class BaseRepository<T> {
     this.collection = db.collection<T>(collectionName);
   }
 
-  async findAll(): Promise<WithId<T>[]> {
-    const docs = await this.collection.find().toArray();
+  async findAll(
+    filter?: Filter<T>,
+    options?: FindOptions,
+  ): Promise<WithId<T>[]> {
+    const docs = await this.collection.find(filter, options).toArray();
     return docs as WithId<T>[];
-    // return docs.map((doc) => ({
-    //   ...doc,
-    //   _id: doc._id.toHexString(),
-    // })) as WithId<T>[];
+  }
+
+  async findAndCount(
+    filter?: Filter<T>,
+    options?: FindOptions,
+  ): Promise<{ data: WithId<T>[]; count: number }> {
+    const docs = await this.collection.find(filter, options).toArray();
+    const count = await this.collection.countDocuments(filter);
+    return { data: docs as WithId<T>[], count };
   }
 
   async findOneById(id: ObjectId): Promise<WithId<T> | null> {

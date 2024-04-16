@@ -9,6 +9,7 @@ import {
   UnauthorizedException,
   UseInterceptors,
   Inject,
+  Query,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -19,6 +20,7 @@ import { User } from '@/users/entities/user.entity';
 import { CACHE_MANAGER, CacheInterceptor } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { ObjectId } from 'mongodb';
+import { PostQueryDto } from './dto/query.dto';
 
 @Controller('posts')
 @UseInterceptors(CacheInterceptor)
@@ -37,8 +39,8 @@ export class PostsController {
   }
 
   @Get()
-  findAll() {
-    return this.postsService.findAll();
+  findAll(@Query() query: PostQueryDto) {
+    return this.postsService.findAll(query);
   }
 
   @Get(':id')
