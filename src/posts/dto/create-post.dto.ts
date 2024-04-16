@@ -1,8 +1,8 @@
 import {
   IsBoolean,
   IsEnum,
-  IsMongoId,
   IsNotEmpty,
+  IsOptional,
   IsString,
 } from 'class-validator';
 import { PostType } from '../types';
@@ -20,12 +20,8 @@ export class CreatePostDto {
   @IsString()
   content: string;
 
-  @IsNotEmpty()
-  @IsMongoId()
-  userId: string;
-
-  @IsNotEmpty()
   @IsBoolean()
+  @IsOptional()
   isPublished: boolean;
 
   @IsEnum(PostType)

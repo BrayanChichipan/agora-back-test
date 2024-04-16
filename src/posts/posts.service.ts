@@ -8,14 +8,18 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostRepository } from './entities/post.repository';
 import { Post } from './entities/post.entity';
+import { User } from '@/users/entities/user.entity';
 
 @Injectable()
 export class PostsService {
   constructor(private readonly postRepo: PostRepository) {}
 
-  async create(createPostDto: CreatePostDto) {
+  async create(createPostDto: CreatePostDto, user: User) {
     try {
-      const post = await this.postRepo.create(createPostDto);
+      const post = await this.postRepo.create({
+        ...createPostDto,
+        userId: user._id,
+      });
       return post;
     } catch (error) {
       this.handeDBExceptions(error);
@@ -36,7 +40,9 @@ export class PostsService {
     }
 
     if (!post) {
-      throw new NotFoundException(`Post with  id not found`);
+      throw new NotFoundException(
+        `Post with id:  ${JSON.stringify(id)} not found`,
+      );
     }
 
     return post;

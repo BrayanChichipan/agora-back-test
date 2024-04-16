@@ -1,4 +1,3 @@
-import { Injectable, Inject } from '@nestjs/common';
 import {
   Collection,
   ObjectId,
@@ -8,19 +7,20 @@ import {
   OptionalUnlessRequiredId,
 } from 'mongodb';
 
-@Injectable()
 export class BaseRepository<T> {
   protected readonly collection: Collection<T>;
 
-  constructor(
-    @Inject('DATABASE_CONNECTION') protected readonly db: Db,
-    collectionName: string,
-  ) {
+  constructor(db: Db, collectionName: string) {
     this.collection = db.collection<T>(collectionName);
   }
 
   async findAll(): Promise<WithId<T>[]> {
-    return await this.collection.find().toArray();
+    const docs = await this.collection.find().toArray();
+    return docs as WithId<T>[];
+    // return docs.map((doc) => ({
+    //   ...doc,
+    //   _id: doc._id.toHexString(),
+    // })) as WithId<T>[];
   }
 
   async findOneById(id: string): Promise<WithId<T> | null> {

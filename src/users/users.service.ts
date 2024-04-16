@@ -58,6 +58,22 @@ export class UsersService {
     return user;
   }
 
+  async findOneByEmail(email: string) {
+    let user: User;
+
+    try {
+      user = await this.userRepo.findOne({ email });
+    } catch (error) {
+      this.handeDBExceptions(error);
+    }
+
+    if (!user) {
+      throw new NotFoundException(`User with email: ${email} not found`);
+    }
+
+    return user;
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto) {
     let user: User;
     try {
