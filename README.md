@@ -1,73 +1,140 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
+# AGORA API
 ## Description
+Este proyecto contiene la logica de recursos del blog, usuarios, y contactos de usuarios que son utilizados en la pagina de [agora](https://master--agora-app-test.netlify.app/)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Tabla de Contenidos
+- [AGORA API](#agora-api)
+  - [Description](#description)
+  - [Tabla de Contenidos](#tabla-de-contenidos)
+  - [Tecnologias](#tecnologias)
+  - [Configuración Inicial](#configuración-inicial)
+    - [Instalación de Dependencias](#instalación-de-dependencias)
+    - [Variables de Entorno](#variables-de-entorno)
+    - [Ejecutando la applicacion](#ejecutando-la-applicacion)
+  - [Estructura del proyecto](#estructura-del-proyecto)
+  - [Base de Datos](#base-de-datos)
+    - [Colecciones](#colecciones)
+    - [Configuracion](#configuracion)
+    - [Patrón de uso](#patrón-de-uso)
+  - [Practicas](#practicas)
+    - [Validaciones](#validaciones)
+    - [Autenticacion](#autenticacion)
+      - [Mejora](#mejora)
+    - [Cache](#cache)
+      - [Mejora](#mejora-1)
+    - [Logging](#logging)
+      - [Niveles de Loggin](#niveles-de-loggin)
+  - [API Desplegada](#api-desplegada)
+    - [URL](#url)
 
-## Installation
+## Tecnologias
+  - NestJs (Node,Express)
+  - MongoDB
+  - JWT
+
+## Configuración Inicial
+
+### Instalación de Dependencias
+Para instalar las dependencias del proyecto, ejecuta el siguiente comando:
 
 ```bash
-$ yarn install
+yarn
 ```
 
-## Running the app
+### Variables de Entorno
 
-```bash
-# development
-$ yarn run start
+Asegúrate de configurar las variables de entorno necesarias en un archivo .env.
+
+```
+PORT=8000
+MONGO_URI=
+WEB_CLIENT_DOMAIN=
+WEB_CLIENT_URL=
+JWT_SECRET=
+CACHE_TTL=6000
+```
+
+### Ejecutando la applicacion
+ ```
+#development
+$yarn run start
 
 # watch mode
 $ yarn run start:dev
 
-# production mode
-$ yarn run start:prod
+# production
+$yarn run start:prod
+
+ ```
+
+## Estructura del proyecto
+
+```lua
+src/
+|-- config/
+|   |-- envars
+|   ...
+|-- core/
+|   |-- dtos/
+|   |-- interceptors/
+|   |...
+|-- posts/
+|   |-- dto/
+|   |-- entities/
+|   |-- types/ 
+|   |-- controller 
+|   |-- service
+|   |-- module
+|-- user-contact/...
+|-- users/...
+|   ...
+|-- mainfiles...
+
 ```
 
-## Test
+## Base de Datos
+El proyecto utiliza MongoDB como base de datos, alojada en MongoDB Atlas.
 
-```bash
-# unit tests
-$ yarn run test
+### Colecciones
+ - Users
+ - Posts
+ - User Contact
 
-# e2e tests
-$ yarn run test:e2e
+### Configuracion
+La conexión a la base de datos se establece en el module **DatabaseModule**: *src/database/database.module.ts.*
 
-# test coverage
-$ yarn run test:cov
-```
+### Patrón de uso
+Se siguió el patron repositorio para el uso de las colecciones de la base de datos, el repositorio base se encuentra en: *src/core/BaseRepository.ts*
 
-## Support
+## Practicas
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Validaciones
+En cada ruta son validados tantos el cuerpo de la peticion, como los query params utilizando **DTOS** correspondientes.
 
-## Stay in touch
+### Autenticacion
+Se creo un modulo de autenticacion que utiliza el servicio de usuarios (users), para la creacion de usuarios. En este modulo se utiliza la estrategia de tokens JWT, tanto para acceso como para recreacion de credenciales. 
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+#### Mejora
+Si bien se utilizan tokes para autenticacion, es recomendable agregar autorizacion basada en roles para restringir accesos a recursos a los usuarios.
 
-## License
+### Cache
+El proyecto utiliza configuracion de cache en el modulo de posts para los metodos get, asi mismo se utiliza la invalidacion de cache cuando existen mutationes en los posts. 
+EL tiempo de vida de cache es dado por la envar **CACHE_TTL** en milisegundos
 
-Nest is [MIT licensed](LICENSE).
+#### Mejora
+Si bien el cache local es funcional, se puede optar por utilizar un almacenamiento diferente como **redis**, 
+
+### Logging
+Se utiliza un sistema de logging para monitorear las operaciones y errores. Se utiliza el propio modulo de login de Nestjs.
+
+#### Niveles de Loggin
+- info
+- warn
+- error
+
+## API Desplegada
+La api fue desplegada utilzando los servicios de **render**
+
+### URL
+[agora back url](https://agora-back-test.onrender.com)
+
