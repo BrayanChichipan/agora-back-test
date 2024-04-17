@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserContactDto } from './dto/create-user-contact.dto';
@@ -13,6 +14,8 @@ import { PostQueryDto } from '@/posts/dto/query.dto';
 
 @Injectable()
 export class UserContactService {
+  logger = new Logger(UserContactService.name);
+
   constructor(private readonly userRepo: UserContactRepository) {}
 
   async create(createUserDto: CreateUserContactDto) {
@@ -20,6 +23,7 @@ export class UserContactService {
 
     try {
       user = await this.userRepo.create(createUserDto);
+      this.logger.log(`UserContact created: ${JSON.stringify(user)}`);
       return user;
     } catch (error) {
       this.handeDBExceptions(error);
@@ -63,22 +67,6 @@ export class UserContactService {
     return user;
   }
 
-  async findOneByEmail(email: string) {
-    let user: UserContact;
-
-    try {
-      user = await this.userRepo.findOne({ email });
-    } catch (error) {
-      this.handeDBExceptions(error);
-    }
-
-    if (!user) {
-      throw new NotFoundException(`UserContact with email: ${email} not found`);
-    }
-
-    return user;
-  }
-
   async update(id: ObjectId, updateUserDto: UpdateUserContactDto) {
     let user: UserContact;
     try {
@@ -95,7 +83,9 @@ export class UserContactService {
 
     Object.assign(user, updateUserDto);
     try {
-      return await this.userRepo.update(id, user);
+      const userUpdated = await this.userRepo.update(id, user);
+      this.logger.log(`UserContact updated: ${JSON.stringify(userUpdated)}`);
+      return userUpdated;
     } catch (error) {
       this.handeDBExceptions(error);
     }
@@ -118,6 +108,7 @@ export class UserContactService {
 
     try {
       await this.userRepo.delete(user._id);
+      this.logger.log(`UserContact deleted: ${JSON.stringify(user)}`);
       return {
         status: 'ok',
         message: 'UserContact deleted successfully',
@@ -135,7 +126,7 @@ export class UserContactService {
     if (error.code === '23503') {
       throw new BadRequestException(error.detail);
     }
-    console.log(error);
+    this.logger.error(error.detail);
 
     throw new InternalServerErrorException(
       'Unspected error, check server logs',
